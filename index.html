@@ -138,6 +138,22 @@
   }
   .memo::placeholder { color: rgba(224,135,0,0.7); }
 
+  /* 完了バー */
+  .donebar {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 30;
+    padding: 12px 16px calc(14px + var(--safe-bottom));
+    background: linear-gradient(to top, var(--bg) 62%, rgba(242,242,247,0));
+    pointer-events: none;
+  }
+  .donebar button {
+    width: 100%; border: 0; border-radius: 14px; background: var(--navy); color: #fff;
+    padding: 15px; font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(30,58,95,0.3); pointer-events: auto;
+  }
+  .sect-label.sub { color: var(--tertiary); padding-top: 18px; }
+  .srow.dim { background: rgba(255,255,255,0.55); }
+  .srow.dim .name { color: var(--secondary); }
+
   /* 設定 */
   .list { background: var(--card); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
   .li { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-bottom: 0.5px solid var(--sep); }
@@ -196,7 +212,7 @@
   </div>
 
   <!-- 詳細 -->
-  <div id="detailView" class="view">
+  <div id="detailView" class="view" style="position:relative;">
     <div class="navbar">
       <button class="icon-btn" id="backFromDetail" aria-label="戻る">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -207,6 +223,7 @@
       </button>
     </div>
     <div class="scroll" id="detailScroll"></div>
+    <div class="donebar"><button id="doneBtn">完了</button></div>
   </div>
 
   <!-- 設定 -->
@@ -230,7 +247,7 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   // ---------- バージョン ----------
-  const APP_VERSION = '1.0.0';
+  const APP_VERSION = '1.1.0';
 
   // ---------- IndexedDB ----------
   const DB_NAME = 'dokomire-db';
@@ -263,7 +280,7 @@
   ];
 
   // ---------- State ----------
-  const state = { works: [], services: [], currentId: null, query: '', filter: 'all' };
+  const state = { works: [], services: [], currentId: null, query: '', filter: 'all', detailOrder: [], decidedCount: 0 };
 
   async function loadAll() {
     state.works = await getAll('works');
@@ -332,6 +349,13 @@
   // ---------- 詳細 ----------
   function openDetail(id) {
     state.currentId = id;
+    const w = workById(id);
+    const st = (w && w.statuses) || {};
+    // 開いた時点で並びを固定する（操作中に行が飛ばないように）
+    const act = activeServices();
+    state.detailOrder = act.filter((s) => st[s.id]).map((s) => s.id)
+      .concat(act.filter((s) => !st[s.id]).map((s) => s.id));
+    state.decidedCount = act.filter((s) => st[s.id]).length;
     renderDetail();
     show('detailView');
   }
@@ -340,25 +364,32 @@
     const w = workById(state.currentId);
     if (!w) { show('listView'); return; }
     const st = w.statuses || {};
+    const dc = state.decidedCount;
+    const rows = state.detailOrder.map((sid, i) => {
+      const s = serviceById(sid);
+      if (!s) return '';
+      const cur = st[sid] || {};
+      const on = (k) => cur.s === k ? 'on ' + k : '';
+      let head = '';
+      if (i === 0) head = `<div class="sect-label">${dc > 0 ? '決めたところ' : 'どこで見れる？'}</div>`;
+      if (i === dc && dc > 0) head = `<div class="sect-label sub">まだ決めていない（そのままでOK）</div>`;
+      return head + `<div class="srow ${dc > 0 && i >= dc && !cur.s ? 'dim' : ''}" data-sid="${sid}">
+        <div class="head">
+          <span class="name">${esc(s.name)}</span>
+          <div class="tri">
+            <button data-s="ok" class="${on('ok')}" title="見れる">○</button>
+            <button data-s="limited" class="${on('limited')}" title="制限あり">△</button>
+            <button data-s="no" class="${on('no')}" title="見れない">✕</button>
+          </div>
+        </div>
+        ${cur.s === 'limited' ? `<input class="memo" data-memo="${sid}" placeholder="別料金・期間限定など" value="${esc(cur.memo || '')}" />` : ''}
+      </div>`;
+    }).join('');
+
     const box = $('#detailScroll');
     box.innerHTML = `
       <input class="titlefield" id="titleField" placeholder="作品タイトル" value="${esc(w.title)}" />
-      <div class="sect-label">どこで見れる？</div>
-      ${activeServices().map((s) => {
-        const cur = st[s.id] || {};
-        const on = (k) => cur.s === k ? 'on ' + k : '';
-        return `<div class="srow" data-sid="${s.id}">
-          <div class="head">
-            <span class="name">${esc(s.name)}</span>
-            <div class="tri">
-              <button data-s="ok" class="${on('ok')}" title="見れる">○</button>
-              <button data-s="limited" class="${on('limited')}" title="制限あり">△</button>
-              <button data-s="no" class="${on('no')}" title="見れない">✕</button>
-            </div>
-          </div>
-          ${cur.s === 'limited' ? `<input class="memo" data-memo="${s.id}" placeholder="別料金・期間限定など" value="${esc(cur.memo || '')}" />` : ''}
-        </div>`;
-      }).join('')}
+      ${rows}
       <div class="ver">○ 見れる ／ △ 制限あり ／ ✕ 見れない<br>もう一度押すと未設定に戻ります</div>
     `;
 
@@ -456,7 +487,7 @@
     openDetail(w.id);
     setTimeout(() => { const t = $('#titleField'); if (t) t.focus(); }, 120);
   });
-  $('#backFromDetail').addEventListener('click', async () => {
+  async function leaveDetail() {
     const w = workById(state.currentId);
     if (w && !(w.title || '').trim() && Object.keys(w.statuses || {}).length === 0) {
       await del('works', w.id);
@@ -464,7 +495,9 @@
     }
     state.works.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
     renderList(); show('listView');
-  });
+  }
+  $('#backFromDetail').addEventListener('click', leaveDetail);
+  $('#doneBtn').addEventListener('click', leaveDetail);
   $('#deleteWork').addEventListener('click', async () => {
     const w = workById(state.currentId);
     if (!w) return;
