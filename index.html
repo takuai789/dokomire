@@ -2,268 +2,162 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="どこみれ" />
-<meta name="theme-color" content="#1E3A5F" />
+<meta name="theme-color" content="#F2F2F7" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icon-192.png" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F5A524'/%3E%3Cstop offset='1' stop-color='%231E3A5F'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='34' font-family='Arial,sans-serif' font-size='42' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'%3ED%3C/text%3E%3C/svg%3E" />
 <title>どこみれ</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #F2F2F7;
-    --card: #FFFFFF;
-    --ink: #1a1a1a;
-    --secondary: rgba(60,60,67,0.6);
-    --tertiary: rgba(60,60,67,0.3);
-    --sep: rgba(60,60,67,0.18);
-    --navy: #1E3A5F;
-    --amber: #F5A524;
-    --blue: #1E3A5F;
-    --red: #FF3B30;
-    --ok: #2FA84F;
-    --ltd: #E08700;
-    --no: #9A9AA0;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --bg: #F2F2F7; --card: #FFFFFF; --fill: rgba(118,118,128,.12);
+    --ink: #1C1C1E; --muted: rgba(60,60,67,.6); --tertiary: rgba(60,60,67,.3); --sep: rgba(60,60,67,.18);
+    --accent: #1E3A5F; --accent-soft: #E3EAF3; --gold: #F5A524;
+    --ok: #16A34A; --ok-soft: #E3F5E9; --ltd: #D97706; --ltd-soft: #FDF0DC; --no: #8E8E93; --red: #FF3B30;
+    --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --sf: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; overflow: hidden; background: var(--bg); }
-  body {
-    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
-    color: var(--ink); font-size: 16px; -webkit-font-smoothing: antialiased;
-    overscroll-behavior: none;
-  }
-  #app {
-    height: var(--app-height, 100%);
-    display: flex; flex-direction: column;
-    padding-top: var(--safe-top);
-    transition: height 0.15s ease-out;
-  }
-  .view { display: none; flex-direction: column; flex: 1; min-height: 0; }
-  .view.active { display: flex; }
-
-  .navbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 12px; min-height: 44px; position: relative;
-    background: rgba(242,242,247,0.92);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-bottom: 0.5px solid var(--sep); z-index: 10;
-  }
-  .navbar .title {
-    font-size: 17px; font-weight: 600;
-    position: absolute; left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none; white-space: nowrap;
-  }
-  .icon-btn {
-    width: 36px; min-width: 36px; height: 36px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--navy); background: none; border: 0; cursor: pointer;
-  }
-  .icon-btn.danger { color: var(--red); }
-
-  .scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 16px calc(96px + var(--safe-bottom)); }
-
-  /* 検索とフィルタ */
-  .toolbar { padding: 8px 16px 0; background: var(--bg); }
-  .search {
-    width: 100%; border: 0; border-radius: 10px; background: rgba(118,118,128,0.12);
-    padding: 9px 12px; font-family: inherit; font-size: 15px; color: var(--ink);
-  }
-  .search::placeholder { color: var(--secondary); }
-  .seg { display: flex; gap: 4px; background: rgba(118,118,128,0.12); padding: 3px; border-radius: 9px; margin-top: 8px; }
-  .seg button {
-    flex: 1; border: 0; background: transparent; border-radius: 7px; padding: 7px 0;
-    font-family: inherit; font-size: 13px; font-weight: 500; color: var(--secondary); cursor: pointer;
-  }
-  .seg button.active { background: #fff; color: var(--ink); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
-
-  /* 作品カード */
-  .card {
-    background: var(--card); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px;
-    cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  }
-  .card .ttl { font-size: 16px; font-weight: 600; line-height: 1.35; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
-  .chip {
-    font-size: 12px; font-weight: 600; padding: 4px 9px; border-radius: 999px;
-    display: inline-flex; align-items: center; gap: 4px;
-  }
-  .chip.ok { background: rgba(47,168,79,0.13); color: var(--ok); }
-  .chip.ltd { background: rgba(224,135,0,0.14); color: var(--ltd); }
-  .chip.none { background: rgba(118,118,128,0.12); color: var(--secondary); font-weight: 500; }
-  .empty { text-align: center; color: var(--secondary); font-size: 14px; padding: 60px 20px; line-height: 1.8; }
-
-  /* FAB */
-  .fab {
-    position: absolute; right: 18px; bottom: calc(20px + var(--safe-bottom));
-    width: 58px; height: 58px; border-radius: 29px; border: 0;
-    background: var(--amber); color: #fff; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 6px 20px rgba(245,165,36,0.45); z-index: 20;
-  }
-
-  /* 詳細 */
-  .titlefield {
-    width: 100%; border: 0; background: transparent; font-family: inherit;
-    font-size: 22px; font-weight: 700; color: var(--ink); padding: 6px 0 14px;
-  }
-  .titlefield::placeholder { color: var(--tertiary); }
-  .sect-label { font-size: 12px; font-weight: 600; color: var(--secondary); letter-spacing: 0.04em; padding: 4px 4px 8px; }
-  .srow {
-    background: var(--card); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px;
-  }
-  .srow .head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .srow .name { font-size: 15px; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .tri { display: flex; gap: 5px; }
-  .tri button {
-    border: 1.5px solid var(--sep); background: transparent; border-radius: 8px;
-    width: 42px; height: 34px; font-family: inherit; font-size: 15px; font-weight: 700;
-    color: var(--tertiary); cursor: pointer; display: flex; align-items: center; justify-content: center;
-  }
-  .tri button.on.ok { background: var(--ok); border-color: var(--ok); color: #fff; }
-  .tri button.on.ltd { background: var(--ltd); border-color: var(--ltd); color: #fff; }
-  .tri button.on.no { background: var(--no); border-color: var(--no); color: #fff; }
-  .memo {
-    width: 100%; margin-top: 10px; border: 0; border-radius: 9px;
-    background: rgba(224,135,0,0.10); padding: 9px 11px;
-    font-family: inherit; font-size: 14px; color: var(--ink);
-  }
-  .memo::placeholder { color: rgba(224,135,0,0.7); }
-
-  /* 完了バー */
-  .donebar {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 30;
-    padding: 12px 16px calc(14px + var(--safe-bottom));
-    background: linear-gradient(to top, var(--bg) 62%, rgba(242,242,247,0));
-    pointer-events: none;
-  }
-  .donebar button {
-    width: 100%; border: 0; border-radius: 14px; background: var(--navy); color: #fff;
-    padding: 15px; font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
-    box-shadow: 0 6px 18px rgba(30,58,95,0.3); pointer-events: auto;
-  }
-  .sect-label.sub { color: var(--tertiary); padding-top: 18px; }
-  .srow.dim { background: rgba(255,255,255,0.55); }
-  .srow.dim .name { color: var(--secondary); }
-
-  /* 設定 */
-  .list { background: var(--card); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
-  .li { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-bottom: 0.5px solid var(--sep); }
-  .li:last-child { border-bottom: 0; }
-  .li .lname { flex: 1; font-size: 15px; }
-  .li .lname.off { color: var(--tertiary); }
-  .sw { width: 51px; height: 31px; border-radius: 16px; border: 0; background: rgba(120,120,128,0.24); position: relative; cursor: pointer; flex-shrink: 0; transition: background .2s; }
+  body { font-family: var(--sf); color: var(--ink); font-size: 16px; -webkit-font-smoothing: antialiased; overscroll-behavior: none; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { border: 0; background: none; cursor: pointer; }
+  /* iPhoneの定石：見えている範囲にぴったり固定 */
+  #app { position: fixed; left: 0; right: 0; top: var(--app-top, 0px); height: var(--app-height, 100%); display: flex; flex-direction: column; padding-top: var(--safe-top); max-width: 720px; margin: 0 auto; }
+  .view { display: none; flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 6px 16px 28px; }
+  .view.on { display: block; }
+  .top { display: flex; align-items: flex-end; justify-content: space-between; padding: 8px 4px 10px; }
+  .top h1 { font-size: 32px; font-weight: 700; }
+  .top .add { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 22px; line-height: 36px; margin-bottom: 4px; }
+  .search { width: 100%; border: 0; background: var(--fill); border-radius: 10px; padding: 9px 12px; font-size: 16px; margin-bottom: 10px; }
+  .seg { display: flex; background: var(--fill); border-radius: 9px; padding: 2px; margin-bottom: 14px; }
+  .seg button { flex: 1; padding: 7px 4px; border-radius: 7px; font-size: 13px; font-weight: 600; }
+  .seg button.on { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .sec { font-size: 13px; color: var(--muted); font-weight: 500; margin: 16px 4px 6px; display: flex; justify-content: space-between; }
+  .list { background: var(--card); border-radius: 12px; overflow: hidden; }
+  .row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: .5px solid var(--sep); cursor: pointer; }
+  .row:last-child { border-bottom: 0; }
+  .row:active { background: var(--fill); }
+  .row-main { flex: 1; min-width: 0; }
+  .row-t { font-size: 17px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .chev { color: var(--tertiary); font-size: 20px; }
+  .kind { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 5px; padding: 1px 6px; margin-left: 6px; vertical-align: 2px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+  .chip { font-size: 11.5px; font-weight: 600; border-radius: 6px; padding: 2px 7px; }
+  .chip.ok { color: var(--ok); background: var(--ok-soft); }
+  .chip.ltd { color: var(--ltd); background: var(--ltd-soft); }
+  .chip.mine { color: #fff; }
+  .chip.ok.mine { background: var(--ok); }
+  .chip.ltd.mine { background: var(--ltd); }
+  .chip.none { color: var(--no); background: var(--fill); }
+  .watch-now { font-size: 12px; font-weight: 700; color: var(--ok); white-space: nowrap; }
+  .empty { text-align: center; color: var(--muted); font-size: 14px; line-height: 1.8; padding: 40px 16px; }
+  .legend { font-size: 12px; color: var(--muted); margin: 8px 4px 0; line-height: 1.6; }
+  /* サブスク */
+  .sum { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+  .sum .box { background: var(--card); border-radius: 12px; padding: 12px 14px; }
+  .sum .l { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .sum .v { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .sum .v small { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 2px; }
+  .sum .box.wide { grid-column: 1 / -1; }
+  .price { text-align: right; font-variant-numeric: tabular-nums; }
+  .price b { font-size: 17px; font-weight: 600; }
+  .price small { display: block; font-size: 12px; color: var(--muted); }
+  .soon { color: var(--ltd); font-weight: 700; }
+  .btn-row { display: block; width: 100%; text-align: left; padding: 13px 14px; color: var(--accent); font-size: 17px; background: var(--card); border-radius: 12px; margin-top: 10px; }
+  /* タブバー */
+  .tabbar { flex-shrink: 0; display: flex; background: rgba(249,249,251,.94); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border-top: .5px solid var(--sep); padding-bottom: var(--safe-bottom); }
+  body.keyboard-open .tabbar { display: none; }
+  .tabbar button { flex: 1; padding: 7px 0 5px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10.5px; font-weight: 600; color: #8E8E93; }
+  .tabbar button.on { color: var(--accent); }
+  .tabbar svg { width: 26px; height: 26px; }
+  /* シート */
+  .sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 60; opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .sheet-bg.show { opacity: 1; pointer-events: auto; }
+  .sheet { position: fixed; left: 0; right: 0; bottom: var(--kb, 0px); max-width: 720px; margin: 0 auto; max-height: calc(var(--app-height, 100vh) - var(--safe-top) - 16px); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; background: var(--bg); border-radius: 14px 14px 0 0; padding: 8px 16px calc(var(--safe-bottom) + 20px); z-index: 61; transform: translateY(105%); transition: transform .28s cubic-bezier(.32,.72,0,1); }
+  body.keyboard-open .sheet { padding-bottom: 16px; }
+  .sheet.show { transform: none; }
+  .grab { width: 36px; height: 5px; border-radius: 3px; background: var(--tertiary); margin: 0 auto 10px; }
+  .sh-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .sh-head h2 { font-size: 17px; font-weight: 600; }
+  .sh-close { width: 30px; height: 30px; border-radius: 50%; background: var(--fill); color: var(--muted); font-size: 17px; }
+  .fld-l { display: block; font-size: 13px; color: var(--muted); margin: 14px 4px 6px; }
+  .fld { width: 100%; border: 0; background: var(--card); border-radius: 10px; padding: 12px 14px; font-size: 17px; }
+  textarea.fld { resize: vertical; min-height: 60px; line-height: 1.5; }
+  .fld-row { display: flex; gap: 8px; align-items: center; }
+  .fld-row .fld { flex: 1; min-width: 0; }
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; background: var(--card); border-radius: 10px; padding: 10px 14px; font-size: 17px; }
+  .sw { width: 51px; height: 31px; border-radius: 16px; background: #E9E9EA; position: relative; transition: background .2s; flex-shrink: 0; }
+  .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.2); transition: transform .2s; }
   .sw.on { background: var(--ok); }
-  .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.25); transition: transform .2s; }
   .sw.on::after { transform: translateX(20px); }
-  .btn {
-    width: 100%; border: 0; border-radius: 12px; background: var(--card); color: var(--navy);
-    padding: 14px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 10px;
-  }
-  .btn.danger { color: var(--red); }
-  .ver { text-align: center; padding: 14px; font-size: 12px; color: var(--tertiary); }
-
-  /* 更新バナー */
-  #updateBanner {
-    position: fixed; left: 12px; right: 12px;
-    bottom: calc(var(--safe-bottom) + 16px); z-index: 1000;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    background: var(--navy); color: #fff; border: 0; border-radius: 14px;
-    padding: 14px 18px; font-family: inherit; font-size: 14px; font-weight: 600;
-    box-shadow: 0 8px 28px rgba(30,58,95,0.4); cursor: pointer;
-    transform: translateY(140%); transition: transform 0.35s cubic-bezier(.32,.72,0,1);
-  }
-  #updateBanner.show { transform: translateY(0); }
-  #updateBanner svg { display: block; flex-shrink: 0; }
+  .srow { background: var(--card); padding: 10px 14px; border-bottom: .5px solid var(--sep); }
+  .srow:last-child { border-bottom: 0; }
+  .srow-top { display: flex; align-items: center; gap: 8px; }
+  .srow-name { flex: 1; font-size: 16px; font-weight: 500; min-width: 0; }
+  .mine-tag { font-size: 10.5px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 5px; padding: 1px 6px; margin-left: 6px; vertical-align: 2px; }
+  .tri { display: inline-flex; background: var(--fill); border-radius: 8px; padding: 2px; }
+  .tri button { font-size: 12.5px; font-weight: 600; padding: 6px 9px; border-radius: 6px; color: var(--muted); }
+  .tri button.on.ok { background: var(--ok); color: #fff; }
+  .tri button.on.limited { background: var(--ltd); color: #fff; }
+  .tri button.on.no { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+  .memo { width: 100%; border: 0; background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 16px; margin-top: 8px; }
+  .primary { width: 100%; margin-top: 18px; padding: 14px; border-radius: 12px; background: var(--accent); color: #fff; font-size: 17px; font-weight: 600; }
+  .danger { width: 100%; margin-top: 8px; padding: 13px; border-radius: 12px; background: var(--card); color: var(--red); font-size: 17px; }
+  .hist { background: var(--card); border-radius: 10px; overflow: hidden; }
+  .hrow { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: .5px solid var(--sep); font-size: 15px; }
+  .hrow:last-child { border-bottom: 0; }
+  .hrow .x { color: var(--tertiary); font-size: 16px; padding: 0 4px; }
+  .note { font-size: 12.5px; color: var(--muted); margin: 6px 4px 0; line-height: 1.6; }
+  #toast { position: fixed; left: 50%; top: calc(var(--safe-top) + 14px); transform: translateX(-50%); background: rgba(28,28,30,.94); color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 14px; z-index: 9000; opacity: 0; pointer-events: none; transition: opacity .25s; max-width: 90vw; text-align: center; }
+  #toast.show { opacity: 1; }
+  #updateBanner { position: fixed; left: 12px; right: 12px; bottom: calc(var(--safe-bottom) + 70px); z-index: 1000; display: flex; justify-content: center; background: var(--accent); color: #fff; border-radius: 14px; padding: 14px 18px; font-size: 15px; font-weight: 600; box-shadow: 0 8px 28px rgba(0,0,0,.2); transform: translateY(200%); transition: transform .35s cubic-bezier(.32,.72,0,1); }
+  #updateBanner.show { transform: none; }
 </style>
 </head>
 <body>
 <div id="app">
-
-  <!-- 一覧 -->
-  <div id="listView" class="view active" style="position:relative;">
-    <div class="navbar">
-      <button class="icon-btn" id="toSettings" aria-label="設定">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.43.64.79.79H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
-      <span class="title">どこみれ</span>
-      <span style="width:36px;"></span>
-    </div>
-    <div class="toolbar">
-      <input class="search" id="searchInput" type="search" placeholder="作品をさがす" />
-      <div class="seg" id="filterSeg">
-        <button data-f="all" class="active">すべて</button>
-        <button data-f="ok">見れる</button>
-        <button data-f="no">見れない</button>
-      </div>
-    </div>
-    <div class="scroll" id="listScroll"></div>
-    <button class="fab" id="addBtn" aria-label="作品を追加">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-    </button>
-  </div>
-
-  <!-- 詳細 -->
-  <div id="detailView" class="view" style="position:relative;">
-    <div class="navbar">
-      <button class="icon-btn" id="backFromDetail" aria-label="戻る">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <span class="title">作品</span>
-      <button class="icon-btn danger" id="deleteWork" aria-label="削除">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-      </button>
-    </div>
-    <div class="scroll" id="detailScroll"></div>
-    <div class="donebar"><button id="doneBtn">完了</button></div>
-  </div>
-
-  <!-- 設定 -->
-  <div id="settingsView" class="view">
-    <div class="navbar">
-      <button class="icon-btn" id="backFromSettings" aria-label="戻る">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <span class="title">設定</span>
-      <span style="width:36px;"></span>
-    </div>
-    <div class="scroll" id="settingsScroll"></div>
-  </div>
-
+  <div class="view on" id="worksView"></div>
+  <div class="view" id="subsView"></div>
+  <div class="view" id="setView"></div>
+  <nav class="tabbar">
+    <button data-tab="worksView" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M10 9.5v5l4-2.5z" fill="currentColor"/></svg>作品</button>
+    <button data-tab="subsView"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg>サブスク</button>
+    <button data-tab="setView"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>設定</button>
+  </nav>
 </div>
-<input type="file" id="importFile" accept="application/json" style="display:none" />
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet"></div>
+<div id="toast"></div>
+<input type="file" id="importFile" accept="application/json,.json" style="display:none" />
 
 <script>
+  const APP_VERSION = '2.0.0';
   const $ = (s) => document.querySelector(s);
-  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const pad = (n) => String(n).padStart(2, '0');
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const ymd = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const todayStr = () => ymd(new Date());
+  const parse = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const WD = ['日', '月', '火', '水', '木', '金', '土'];
+  const mdw = (s) => { const d = parse(s); return (d.getMonth() + 1) + '/' + d.getDate() + '(' + WD[d.getDay()] + ')'; };
+  const yen = (n) => '¥' + Math.round(n).toLocaleString('ja-JP');
+  let toastT = 0;
+  function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); }
 
-  // ---------- バージョン ----------
-  const APP_VERSION = '1.1.0';
-
-  // ---------- IndexedDB ----------
-  const DB_NAME = 'dokomire-db';
-  const DB_VERSION = 1;
-  const STORES = ['works', 'services'];
+  // ---------- IndexedDB（名前・形式は v1 のまま。項目を足しただけ） ----------
+  const DB_NAME = 'dokomire-db', DB_VERSION = 1, STORES = ['works', 'services'];
   let _db = null;
-
   function openDB() {
     return new Promise((resolve, reject) => {
       const req = indexedDB.open(DB_NAME, DB_VERSION);
-      req.onupgradeneeded = () => {
-        const db = req.result;
-        for (const s of STORES) {
-          if (!db.objectStoreNames.contains(s)) db.createObjectStore(s, { keyPath: 'id' });
-        }
-      };
+      req.onupgradeneeded = () => { const db = req.result; for (const s of STORES) if (!db.objectStoreNames.contains(s)) db.createObjectStore(s, { keyPath: 'id' }); };
       req.onsuccess = () => { _db = req.result; resolve(_db); };
       req.onerror = () => reject(req.error);
     });
@@ -273,312 +167,337 @@
   const put = (store, val) => new Promise((res, rej) => { const r = tx(store, 'readwrite').put(val); r.onsuccess = () => res(); r.onerror = () => rej(r.error); });
   const del = (store, id) => new Promise((res, rej) => { const r = tx(store, 'readwrite').delete(id); r.onsuccess = () => res(); r.onerror = () => rej(r.error); });
 
-  // ---------- プリセットのサービス ----------
-  const PRESETS = [
-    'Netflix', 'Amazon Prime Video', 'U-NEXT', 'Disney+',
-    'Hulu', 'ABEMA', 'Apple TV+', 'DMM TV', 'Lemino', 'TVer'
-  ];
-
-  // ---------- State ----------
-  const state = { works: [], services: [], currentId: null, query: '', filter: 'all', detailOrder: [], decidedCount: 0 };
+  // works:    { id, title, kind?, statuses: { [serviceId]: { s:'ok'|'limited'|'no', memo } }, note?, createdAt, updatedAt }
+  // services: { id, name, enabled, order, subscribed?, price?, cycle?:'month'|'year', nextRenew?, payment?, memo?, history?:[{type:'start'|'stop',date}], updatedAt }
+  const PRESETS = ['Netflix', 'Amazon Prime Video', 'U-NEXT', 'Disney+', 'Hulu', 'ABEMA', 'Apple TV+', 'DMM TV', 'Lemino', 'TVer'];
+  const KINDS = ['映画', 'ドラマ', 'アニメ', 'その他'];
+  const state = { works: [], services: [], tab: 'worksView', query: '', filter: 'all' };
 
   async function loadAll() {
     state.works = await getAll('works');
     state.services = await getAll('services');
-    if (state.services.length === 0) {
+    if (!state.services.length) {
       state.services = PRESETS.map((name, i) => ({ id: uid(), name, enabled: true, order: i, updatedAt: Date.now() }));
       for (const s of state.services) await put('services', s);
     }
     state.services.sort((a, b) => (a.order || 0) - (b.order || 0));
-    state.works.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    state.works.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ja'));
   }
-
-  const activeServices = () => state.services.filter((s) => s.enabled !== false);
-  const workById = (id) => state.works.find((w) => w.id === id);
+  // 作品の画面に出すサービス（契約中は常に出す）
+  const shownServices = () => state.services.filter((s) => s.enabled !== false || s.subscribed);
   const serviceById = (id) => state.services.find((s) => s.id === id);
-
-  function statusList(work, kind) {
-    const st = work.statuses || {};
-    return activeServices().filter((s) => st[s.id] && st[s.id].s === kind);
+  const workById = (id) => state.works.find((w) => w.id === id);
+  const statusOf = (w, sid) => (w.statuses && w.statuses[sid] && w.statuses[sid].s) || '';
+  const watchable = (w) => shownServices().filter((s) => ['ok', 'limited'].includes(statusOf(w, s.id)));
+  const watchableMine = (w) => watchable(w).filter((s) => s.subscribed);
+  const favCountFor = (s) => state.works.filter((w) => ['ok', 'limited'].includes(statusOf(w, s.id))).length;
+  const monthly = (s) => s.price ? (s.cycle === 'year' ? s.price / 12 : s.price) : 0;
+  // 次の更新日：過ぎていたら周期ぶん先へ送って表示する
+  function nextRenew(s) {
+    if (!s.nextRenew) return null;
+    const base = parse(s.nextRenew), day = base.getDate(), t = parse(todayStr());
+    let d = new Date(base), guard = 0;
+    while (d < t && guard++ < 600) {
+      if (s.cycle === 'year') d.setFullYear(d.getFullYear() + 1);
+      else { d = new Date(d.getFullYear(), d.getMonth() + 1, 1); d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate())); }
+    }
+    return ymd(d);
   }
+  const daysTo = (s) => Math.round((parse(s) - parse(todayStr())) / 86400000);
 
-  // ---------- 画面切り替え ----------
-  function show(viewId) {
-    document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.id === viewId));
-  }
-
-  // ---------- 一覧 ----------
-  function renderList() {
+  // ---------- 作品タブ ----------
+  function renderWorks() {
     const q = state.query.trim().toLowerCase();
     let items = state.works.slice();
     if (q) items = items.filter((w) => (w.title || '').toLowerCase().includes(q));
-    if (state.filter === 'ok') {
-      items = items.filter((w) => statusList(w, 'ok').length + statusList(w, 'limited').length > 0);
-    } else if (state.filter === 'no') {
-      items = items.filter((w) => statusList(w, 'ok').length + statusList(w, 'limited').length === 0);
-    }
-
-    const box = $('#listScroll');
-    if (items.length === 0) {
-      box.innerHTML = `<div class="empty">${state.works.length === 0
-        ? '右下の＋から、気になる作品を<br>追加してみよう'
-        : '条件に合う作品がありません'}</div>`;
-      return;
-    }
-    box.innerHTML = items.map((w) => {
-      const oks = statusList(w, 'ok');
-      const ltds = statusList(w, 'limited');
-      let chips = '';
-      if (oks.length === 0 && ltds.length === 0) {
-        const anyNo = statusList(w, 'no').length > 0;
-        chips = `<span class="chip none">${anyNo ? 'どこでも見れない' : 'まだ未設定'}</span>`;
-      } else {
-        chips = oks.map((s) => `<span class="chip ok">● ${esc(s.name)}</span>`).join('')
-              + ltds.map((s) => `<span class="chip ltd">▲ ${esc(s.name)}</span>`).join('');
-      }
-      return `<div class="card" data-id="${w.id}">
-        <div class="ttl">${esc(w.title) || '（無題）'}</div>
-        <div class="chips">${chips}</div>
-      </div>`;
+    if (state.filter === 'mine') items = items.filter((w) => watchableMine(w).length);
+    if (state.filter === 'none') items = items.filter((w) => !watchable(w).length);
+    const counts = { all: state.works.length, mine: state.works.filter((w) => watchableMine(w).length).length, none: state.works.filter((w) => !watchable(w).length).length };
+    const rows = items.map((w) => {
+      const ws = watchable(w);
+      const chips = ws.length
+        ? ws.map((s) => `<span class="chip ${statusOf(w, s.id) === 'ok' ? 'ok' : 'ltd'}${s.subscribed ? ' mine' : ''}">${esc(s.name)}${statusOf(w, s.id) === 'limited' ? '・制限' : ''}</span>`).join('')
+        : '<span class="chip none">いまはどこにもない</span>';
+      const now = watchableMine(w).length ? '<span class="watch-now">今みれる</span>' : '';
+      return `<div class="row" data-work="${w.id}"><div class="row-main"><div class="row-t">${esc(w.title || '（無題）')}${w.kind ? `<span class="kind">${esc(w.kind)}</span>` : ''}</div><div class="chips">${chips}</div></div>${now}<span class="chev">›</span></div>`;
     }).join('');
-    box.querySelectorAll('.card').forEach((el) => {
-      el.addEventListener('click', () => openDetail(el.dataset.id));
-    });
+    $('#worksView').innerHTML = `
+      <div class="top"><h1>どこみれ</h1><button class="add" data-addwork aria-label="作品を追加">＋</button></div>
+      <input class="search" id="search" type="search" placeholder="作品を探す" value="${esc(state.query)}" autocomplete="off">
+      <div class="seg">${[['all', 'すべて'], ['mine', '契約中でみれる'], ['none', 'どこにもない']].map(([k, l]) => `<button data-filter="${k}" class="${state.filter === k ? 'on' : ''}">${l} ${counts[k]}</button>`).join('')}</div>
+      ${items.length ? `<div class="list">${rows}</div><div class="legend">色の濃いサービスは契約中。「今みれる」は契約中のどれかで見られる作品です。</div>`
+        : `<div class="empty">${state.works.length ? '条件に合う作品がありません' : '右上の＋から、お気に入りの作品を<br>追加してみましょう'}</div>`}`;
+    const s = $('#search');
+    s.addEventListener('input', () => { state.query = s.value; const pos = s.selectionStart; renderWorks(); const n = $('#search'); n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} });
   }
 
-  // ---------- 詳細 ----------
-  function openDetail(id) {
-    state.currentId = id;
-    const w = workById(id);
-    const st = (w && w.statuses) || {};
-    // 開いた時点で並びを固定する（操作中に行が飛ばないように）
-    const act = activeServices();
-    state.detailOrder = act.filter((s) => st[s.id]).map((s) => s.id)
-      .concat(act.filter((s) => !st[s.id]).map((s) => s.id));
-    state.decidedCount = act.filter((s) => st[s.id]).length;
-    renderDetail();
-    show('detailView');
-  }
-
-  function renderDetail() {
-    const w = workById(state.currentId);
-    if (!w) { show('listView'); return; }
-    const st = w.statuses || {};
-    const dc = state.decidedCount;
-    const rows = state.detailOrder.map((sid, i) => {
-      const s = serviceById(sid);
-      if (!s) return '';
-      const cur = st[sid] || {};
-      const on = (k) => cur.s === k ? 'on ' + k : '';
-      let head = '';
-      if (i === 0) head = `<div class="sect-label">${dc > 0 ? '決めたところ' : 'どこで見れる？'}</div>`;
-      if (i === dc && dc > 0) head = `<div class="sect-label sub">まだ決めていない（そのままでOK）</div>`;
-      return head + `<div class="srow ${dc > 0 && i >= dc && !cur.s ? 'dim' : ''}" data-sid="${sid}">
-        <div class="head">
-          <span class="name">${esc(s.name)}</span>
-          <div class="tri">
-            <button data-s="ok" class="${on('ok')}" title="見れる">○</button>
-            <button data-s="limited" class="${on('limited')}" title="制限あり">△</button>
-            <button data-s="no" class="${on('no')}" title="見れない">✕</button>
-          </div>
-        </div>
-        ${cur.s === 'limited' ? `<input class="memo" data-memo="${sid}" placeholder="別料金・期間限定など" value="${esc(cur.memo || '')}" />` : ''}
-      </div>`;
-    }).join('');
-
-    const box = $('#detailScroll');
-    box.innerHTML = `
-      <input class="titlefield" id="titleField" placeholder="作品タイトル" value="${esc(w.title)}" />
-      ${rows}
-      <div class="ver">○ 見れる ／ △ 制限あり ／ ✕ 見れない<br>もう一度押すと未設定に戻ります</div>
-    `;
-
-    $('#titleField').addEventListener('input', (e) => {
-      w.title = e.target.value; w.updatedAt = Date.now(); put('works', w);
-    });
-    box.querySelectorAll('.tri button').forEach((b) => {
-      b.addEventListener('click', () => {
-        const sid = b.closest('.srow').dataset.sid;
-        const cur = (w.statuses = w.statuses || {})[sid] || {};
-        const next = b.dataset.s;
-        if (cur.s === next) delete w.statuses[sid];
-        else w.statuses[sid] = { s: next, memo: cur.memo || '' };
-        w.updatedAt = Date.now();
-        put('works', w).then(renderDetail);
+  function openWorkSheet(id) {
+    let w = id ? workById(id) : null;
+    const isNew = !w;
+    if (isNew) w = { id: uid(), title: '', kind: '', statuses: {}, note: '', createdAt: Date.now(), updatedAt: Date.now() };
+    const draft = JSON.parse(JSON.stringify(w));
+    draft.statuses = draft.statuses || {};
+    const svc = shownServices().slice().sort((a, b) => (b.subscribed ? 1 : 0) - (a.subscribed ? 1 : 0));
+    let first = true;
+    const draw = () => {
+      const rows = svc.map((s) => {
+        const st = (draft.statuses[s.id] || {}).s || '';
+        return `<div class="srow" data-sid="${s.id}"><div class="srow-top"><span class="srow-name">${esc(s.name)}${s.subscribed ? '<span class="mine-tag">契約中</span>' : ''}</span>
+          <span class="tri">${[['ok', 'みれる'], ['limited', '制限あり'], ['no', 'みれない']].map(([k, l]) => `<button data-st="${k}" class="${k} ${st === k ? 'on' : ''}">${l}</button>`).join('')}</span></div>
+          ${st === 'limited' ? `<input class="memo" data-memo="${s.id}" placeholder="別料金・期間限定など" value="${esc((draft.statuses[s.id] || {}).memo || '')}" autocomplete="off">` : ''}</div>`;
+      }).join('');
+      openSheet(`<div class="sh-head"><h2>${isNew ? '作品を追加' : '作品'}</h2><button class="sh-close" data-close>×</button></div>
+        <label class="fld-l">タイトル</label><input class="fld" id="wTitle" placeholder="作品のタイトル" value="${esc(draft.title)}" autocomplete="off" autocorrect="off" spellcheck="false">
+        <label class="fld-l">種類</label><div class="seg" id="wKind" style="margin-bottom:0">${KINDS.map((k) => `<button data-kind="${k}" class="${draft.kind === k ? 'on' : ''}">${k}</button>`).join('')}</div>
+        <label class="fld-l">どこでみれる？（タップで選ぶ・もう一度で取り消し）</label><div class="list">${rows}</div>
+        <label class="fld-l">メモ（任意）</label><textarea class="fld" id="wNote" placeholder="好きなところ、誰と見たいかなど" autocomplete="off">${esc(draft.note || '')}</textarea>
+        <button class="primary" id="wSave">保存</button>
+        ${isNew ? '' : '<button class="danger" id="wDel">この作品を削除</button>'}`, isNew && first);
+      first = false;
+      const sh = $('#sheet');
+      sh.querySelector('#wTitle').addEventListener('input', (e) => { draft.title = e.target.value; });
+      sh.querySelector('#wNote').addEventListener('input', (e) => { draft.note = e.target.value; });
+      sh.querySelector('#wKind').addEventListener('click', (e) => { const b = e.target.closest('[data-kind]'); if (!b) return; draft.kind = draft.kind === b.dataset.kind ? '' : b.dataset.kind; sh.querySelectorAll('[data-kind]').forEach((x) => x.classList.toggle('on', x.dataset.kind === draft.kind)); });
+      sh.querySelectorAll('[data-st]').forEach((b) => b.addEventListener('click', () => {
+        const sid = b.closest('.srow').dataset.sid, cur = draft.statuses[sid] || {};
+        if (cur.s === b.dataset.st) delete draft.statuses[sid]; else draft.statuses[sid] = { s: b.dataset.st, memo: cur.memo || '' };
+        const top = sh.scrollTop; draw(); $('#sheet').scrollTop = top;
+      }));
+      sh.querySelectorAll('[data-memo]').forEach((m) => m.addEventListener('input', () => { draft.statuses[m.dataset.memo].memo = m.value; }));
+      sh.querySelector('#wSave').addEventListener('click', async () => {
+        if (!draft.title.trim()) { toast('タイトルを入れてください'); return; }
+        draft.title = draft.title.trim(); draft.updatedAt = Date.now();
+        await put('works', draft); await loadAll(); closeSheet(); renderAll(); toast(isNew ? '追加しました' : '保存しました');
       });
-    });
-    box.querySelectorAll('.memo').forEach((m) => {
-      m.addEventListener('input', (e) => {
-        const sid = e.target.dataset.memo;
-        if (w.statuses && w.statuses[sid]) {
-          w.statuses[sid].memo = e.target.value;
-          w.updatedAt = Date.now(); put('works', w);
-        }
-      });
-    });
+      const d = sh.querySelector('#wDel');
+      if (d) d.addEventListener('click', async () => { if (!(await ask(`「${draft.title}」を削除しますか？`, '削除する'))) return; await del('works', draft.id); await loadAll(); closeSheet(); renderAll(); });
+    };
+    draw();
   }
 
-  // ---------- 設定 ----------
-  function renderSettings() {
-    const box = $('#settingsScroll');
-    box.innerHTML = `
-      <div class="sect-label">サービス（オフにすると一覧から隠れます）</div>
-      <div class="list">
-        ${state.services.map((s) => `
-          <div class="li" data-sid="${s.id}">
-            <span class="lname ${s.enabled === false ? 'off' : ''}">${esc(s.name)}</span>
-            <button class="sw ${s.enabled === false ? '' : 'on'}" data-toggle="${s.id}" aria-label="表示切替"></button>
-          </div>`).join('')}
+  // ---------- サブスクタブ ----------
+  function renderSubs() {
+    const svc = state.services;
+    const mine = svc.filter((s) => s.subscribed);
+    const others = svc.filter((s) => !s.subscribed && s.enabled !== false);
+    const hidden = svc.filter((s) => !s.subscribed && s.enabled === false);
+    const total = mine.reduce((a, s) => a + monthly(s), 0);
+    const upcoming = mine.map((s) => ({ s, d: nextRenew(s) })).filter((x) => x.d).sort((a, b) => a.d.localeCompare(b.d))[0];
+    const row = (s) => {
+      const nr = s.subscribed ? nextRenew(s) : null;
+      const favs = favCountFor(s);
+      const lastStop = (s.history || []).filter((h) => h.type === 'stop').map((h) => h.date).sort().pop();
+      const sub = s.subscribed
+        ? [nr ? `次の更新 ${mdw(nr)}${daysTo(nr) <= 7 ? `<span class="soon">（あと${daysTo(nr)}日）</span>` : ''}` : '更新日 未設定', s.payment ? esc(s.payment) : '', `お気に入り${favs}本`].filter(Boolean).join(' ・ ')
+        : [`お気に入り${favs}本みれる`, lastStop ? `${mdw(lastStop)}に解約` : ''].filter(Boolean).join(' ・ ');
+      const price = s.subscribed && s.price ? `<div class="price"><b>${yen(s.price)}</b><small>${s.cycle === 'year' ? '年額' : '月額'}</small></div>` : '';
+      return `<div class="row" data-svc="${s.id}"><div class="row-main"><div class="row-t">${esc(s.name)}</div><div class="row-sub">${sub}</div></div>${price}<span class="chev">›</span></div>`;
+    };
+    $('#subsView').innerHTML = `
+      <div class="top"><h1>サブスク</h1></div>
+      <div class="sum">
+        <div class="box"><div class="l">契約中</div><div class="v">${mine.length}<small>件</small></div></div>
+        <div class="box"><div class="l">ひと月あたり</div><div class="v">${yen(total)}</div></div>
+        <div class="box wide"><div class="l">1年あたり ${yen(total * 12)}${upcoming ? `　・　次の更新は <b>${esc(upcoming.s.name)}</b> ${mdw(upcoming.d)}（あと${daysTo(upcoming.d)}日）` : ''}</div></div>
       </div>
-      <button class="btn" id="addService">＋ サービスを追加</button>
-      <div class="sect-label">データ</div>
-      <button class="btn" id="exportBtn">JSONで書き出す</button>
-      <button class="btn" id="importBtn">JSONを取り込む</button>
-      <div class="ver">どこみれ v${APP_VERSION}</div>
-    `;
-    box.querySelectorAll('[data-toggle]').forEach((b) => {
-      b.addEventListener('click', async () => {
-        const s = serviceById(b.dataset.toggle);
-        s.enabled = s.enabled === false; s.updatedAt = Date.now();
-        await put('services', s); renderSettings(); renderList();
-      });
-    });
-    $('#addService').addEventListener('click', async () => {
-      const name = prompt('サービス名');
-      if (!name || !name.trim()) return;
-      const s = { id: uid(), name: name.trim(), enabled: true, order: state.services.length, updatedAt: Date.now() };
-      state.services.push(s); await put('services', s); renderSettings();
-    });
-    $('#exportBtn').addEventListener('click', exportData);
-    $('#importBtn').addEventListener('click', () => $('#importFile').click());
+      <div class="sec"><span>契約中</span></div>
+      ${mine.length ? `<div class="list">${mine.map(row).join('')}</div>` : '<div class="list"><div class="row" style="cursor:default"><div class="row-sub">契約しているサービスを開いて「契約中」をオンにしてください</div></div></div>'}
+      <div class="sec"><span>契約していない</span></div>
+      <div class="list">${others.map(row).join('')}</div>
+      ${hidden.length ? `<div class="sec"><span>作品の画面に出さないサービス</span></div><div class="list">${hidden.map(row).join('')}</div>` : ''}
+      <button class="btn-row" data-addsvc>＋ サービスを追加</button>`;
   }
 
-  // ---------- JSON 書き出し/取り込み ----------
-  const SCHEMA = 'dokomire.v1';
+  function openSvcSheet(id) {
+    const orig = id ? serviceById(id) : null;
+    const isNew = !orig;
+    const s = orig ? JSON.parse(JSON.stringify(orig)) : { id: uid(), name: '', enabled: true, order: state.services.length, subscribed: false, price: 0, cycle: 'month', nextRenew: '', payment: '', memo: '', history: [], updatedAt: Date.now() };
+    s.history = s.history || [];
+    const wasSub = !!s.subscribed;
+    let first = true;
+    const draw = () => {
+      const hist = s.history.slice().sort((a, b) => b.date.localeCompare(a.date));
+      openSheet(`<div class="sh-head"><h2>${isNew ? 'サービスを追加' : esc(s.name)}</h2><button class="sh-close" data-close>×</button></div>
+        <label class="fld-l">サービス名</label><input class="fld" id="sTitle" value="${esc(s.name)}" placeholder="例：Netflix" autocomplete="off" autocorrect="off" spellcheck="false">
+        <label class="fld-l">契約</label><div class="toggle-row"><span>契約中</span><button class="sw ${s.subscribed ? 'on' : ''}" id="sSub" aria-label="契約中"></button></div>
+        ${s.subscribed ? `
+        <label class="fld-l">料金</label><div class="fld-row"><input class="fld" id="sPrice" type="number" inputmode="numeric" value="${s.price || ''}" placeholder="例：1490" autocomplete="off"><div class="seg" id="sCycle" style="margin:0;flex:0 0 140px">${[['month', '月額'], ['year', '年額']].map(([k, l]) => `<button data-cyc="${k}" class="${(s.cycle || 'month') === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
+        <label class="fld-l">次の更新日（過ぎたら自動で次の回に進めて表示します）</label><input class="fld" id="sRenew" type="date" value="${esc(s.nextRenew || '')}">
+        <label class="fld-l">支払い方法</label><input class="fld" id="sPay" value="${esc(s.payment || '')}" placeholder="例：楽天カード、Apple経由" autocomplete="off">` : ''}
+        <label class="fld-l">メモ（任意）</label><textarea class="fld" id="sMemo" placeholder="プラン名・解約の条件など" autocomplete="off">${esc(s.memo || '')}</textarea>
+        <label class="fld-l">契約・解約の記録</label>
+        <div class="hist">${hist.length ? hist.map((h) => `<div class="hrow"><span>${h.type === 'start' ? '契約' : '解約'}　${parse(h.date).getFullYear()}/${mdw(h.date)}</span><button class="x" data-hdel="${h.type}|${h.date}">✕</button></div>`).join('') : '<div class="hrow" style="color:var(--muted)">「契約中」を切り替えて保存すると、その日付で記録されます</div>'}</div>
+        <label class="fld-l">表示</label><div class="toggle-row"><span>作品の画面に出す</span><button class="sw ${s.enabled !== false ? 'on' : ''}" id="sShow" aria-label="作品の画面に出す"></button></div>
+        <div class="note">オフにすると、作品の「どこでみれる？」の一覧から外れます（契約中のものは常に出ます）。</div>
+        <button class="primary" id="sSave">保存</button>
+        ${isNew ? '' : '<button class="danger" id="sDel">このサービスを削除</button>'}`, isNew && first);
+      first = false;
+      const sh = $('#sheet');
+      const keep = () => {
+        s.name = sh.querySelector('#sTitle').value;
+        s.memo = sh.querySelector('#sMemo').value;
+        if (sh.querySelector('#sPrice')) { s.price = Number(sh.querySelector('#sPrice').value) || 0; s.nextRenew = sh.querySelector('#sRenew').value; s.payment = sh.querySelector('#sPay').value; }
+      };
+      sh.querySelector('#sSub').addEventListener('click', () => { keep(); s.subscribed = !s.subscribed; draw(); });
+      sh.querySelector('#sShow').addEventListener('click', (e) => { keep(); s.enabled = s.enabled === false; e.currentTarget.classList.toggle('on', s.enabled !== false); });
+      const cyc = sh.querySelector('#sCycle');
+      if (cyc) cyc.addEventListener('click', (e) => { const b = e.target.closest('[data-cyc]'); if (!b) return; s.cycle = b.dataset.cyc; cyc.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); });
+      sh.querySelectorAll('[data-hdel]').forEach((b) => b.addEventListener('click', () => { keep(); const [t, d] = b.dataset.hdel.split('|'); s.history = s.history.filter((h) => !(h.type === t && h.date === d)); draw(); }));
+      sh.querySelector('#sSave').addEventListener('click', async () => {
+        keep();
+        if (!s.name.trim()) { toast('サービス名を入れてください'); return; }
+        s.name = s.name.trim();
+        // 契約中の切り替えを、その日付で記録
+        if (s.subscribed !== wasSub) s.history.push({ type: s.subscribed ? 'start' : 'stop', date: todayStr() });
+        s.updatedAt = Date.now();
+        await put('services', s); await loadAll(); closeSheet(); renderAll(); toast('保存しました');
+      });
+      const d = sh.querySelector('#sDel');
+      if (d) d.addEventListener('click', async () => {
+        if (!(await ask(`「${s.name}」を削除しますか？\n作品ごとの「みれる」の記録からも外れます。`, '削除する'))) return;
+        await del('services', s.id); await loadAll(); closeSheet(); renderAll();
+      });
+    };
+    draw();
+  }
+
+  // ---------- 設定タブ ----------
+  const BK_KEY = 'dokomire.lastBackupAt', SCHEMA = 'dokomire.v1';
+  function bkText() { let t = 0; try { t = Number(localStorage.getItem(BK_KEY) || 0); } catch (e) {} if (!t) return 'まだ一度もバックアップしていません'; const d = Math.floor((Date.now() - t) / 86400000); return d === 0 ? '前回のバックアップ：今日' : '前回のバックアップから ' + d + '日'; }
+  function renderSet() {
+    $('#setView').innerHTML = `
+      <div class="top"><h1>設定</h1></div>
+      <div class="sec"><span>バックアップ</span></div>
+      <div class="list"><div class="row" id="exportBtn"><div class="row-main"><div class="row-t" style="color:var(--accent)">データを書き出す（バックアップ）</div></div></div>
+      <div class="row" id="importBtn"><div class="row-main"><div class="row-t" style="color:var(--accent)">データを取り込む</div></div></div></div>
+      <div class="note">${bkText()}。データはこの端末の中だけにあります。</div>
+      <div class="note" style="text-align:center;margin-top:30px">どこみれ v${APP_VERSION}</div>`;
+    $('#exportBtn').onclick = exportData;
+    $('#importBtn').onclick = () => $('#importFile').click();
+  }
+  function bkAskSaved() {
+    return new Promise((resolve) => {
+      const bg = document.createElement('div');
+      bg.style.cssText = 'position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.32);display:flex;align-items:center;justify-content:center;padding:24px;font-family:inherit';
+      bg.innerHTML = '<div style="width:100%;max-width:330px;background:#fff;color:#1c1c1e;border-radius:18px;padding:20px 20px 12px;box-shadow:0 12px 40px rgba(0,0,0,.2)"><div style="font-size:16px;font-weight:700;margin-bottom:6px">バックアップは保存できましたか？</div><div style="font-size:14px;line-height:1.6;color:#6e6e73">保存できていれば、前回のバックアップ日を更新します。</div><div style="display:flex;justify-content:flex-end;gap:4px;margin-top:12px"><button data-v="0" style="border:0;background:none;font:inherit;font-size:15px;padding:10px 12px;color:#6e6e73">やめた</button><button data-v="1" style="border:0;background:none;font:inherit;font-size:15px;font-weight:700;padding:10px 12px;color:#007aff">保存できた</button></div></div>';
+      bg.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b) return; bg.remove(); resolve(b.dataset.v === '1'); });
+      document.body.appendChild(bg);
+    });
+  }
+  async function bkSave(text) {
+    const d = new Date(), name = `どこみれ_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}.json`;
+    if (navigator.maxTouchPoints > 0) {
+      try { const file = new File([text], name, { type: 'application/json' }); if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); return 'ok'; } }
+      catch (e) { if (e && e.name === 'AbortError') return (await bkAskSaved()) ? 'ok' : 'cancel'; }
+    }
+    const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1500);
+    return 'ok';
+  }
   async function exportData() {
     const data = { schema: SCHEMA, exportedAt: new Date().toISOString(), works: state.works, services: state.services };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'dokomire-sync.json';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    if (await bkSave(JSON.stringify(data, null, 2)) !== 'ok') return;
+    try { localStorage.setItem(BK_KEY, String(Date.now())); } catch (e) {}
+    renderSet(); toast('書き出しました');
   }
-  async function importData(file) {
-    const data = JSON.parse(await file.text());
-    if (data.schema !== SCHEMA) { alert('このアプリのファイルではないみたい'); return; }
-    const localS = new Map(state.services.map((n) => [n.id, n]));
-    for (const it of (data.services || [])) {
-      const l = localS.get(it.id);
-      if (!l || (it.updatedAt || 0) > (l.updatedAt || 0)) await put('services', it);
-    }
-    const localW = new Map(state.works.map((n) => [n.id, n]));
-    for (const it of (data.works || [])) {
-      const l = localW.get(it.id);
-      if (!l || (it.updatedAt || 0) > (l.updatedAt || 0)) await put('works', it);
-    }
-    await loadAll(); renderList(); renderSettings();
-  }
-
-  // ---------- バインド ----------
-  $('#addBtn').addEventListener('click', async () => {
-    const w = { id: uid(), title: '', statuses: {}, createdAt: Date.now(), updatedAt: Date.now() };
-    state.works.unshift(w); await put('works', w);
-    openDetail(w.id);
-    setTimeout(() => { const t = $('#titleField'); if (t) t.focus(); }, 120);
-  });
-  async function leaveDetail() {
-    const w = workById(state.currentId);
-    if (w && !(w.title || '').trim() && Object.keys(w.statuses || {}).length === 0) {
-      await del('works', w.id);
-      state.works = state.works.filter((x) => x.id !== w.id);
-    }
-    state.works.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-    renderList(); show('listView');
-  }
-  $('#backFromDetail').addEventListener('click', leaveDetail);
-  $('#doneBtn').addEventListener('click', leaveDetail);
-  $('#deleteWork').addEventListener('click', async () => {
-    const w = workById(state.currentId);
-    if (!w) return;
-    if (!confirm('この作品を削除しますか？')) return;
-    await del('works', w.id);
-    state.works = state.works.filter((x) => x.id !== w.id);
-    renderList(); show('listView');
-  });
-  $('#toSettings').addEventListener('click', () => { renderSettings(); show('settingsView'); });
-  $('#backFromSettings').addEventListener('click', () => { renderList(); show('listView'); });
-  $('#searchInput').addEventListener('input', (e) => { state.query = e.target.value; renderList(); });
-  $('#filterSeg').addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
-    state.filter = b.dataset.f;
-    $('#filterSeg').querySelectorAll('button').forEach((x) => x.classList.toggle('active', x === b));
-    renderList();
-  });
-  $('#importFile').addEventListener('change', (e) => {
-    const f = e.target.files[0]; if (f) importData(f); e.target.value = '';
+  $('#importFile').addEventListener('change', async (e) => {
+    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    try {
+      const data = JSON.parse(await f.text());
+      if (data.schema !== SCHEMA) { toast('どこみれのデータではないようです'); return; }
+      let n = 0;
+      for (const [store, list] of [['works', data.works], ['services', data.services]]) {
+        const cur = new Map((await getAll(store)).map((x) => [x.id, x]));
+        for (const it of (list || [])) { const l = cur.get(it.id); if (!l || (it.updatedAt || 0) > (l.updatedAt || 0)) { await put(store, it); n++; } }
+      }
+      await loadAll(); renderAll(); toast(n + '件 取り込みました');
+    } catch (err) { toast('取り込めませんでした'); }
   });
 
-  // ---------- 起動 ----------
-  (async function init() {
-    setupViewportTracking();
-    await openDB();
-    await loadAll();
-    renderList();
+  // ---------- 共通：シート・確認 ----------
+  function openSheet(html, focusFirst) {
+    const sh = $('#sheet'); const was = sh.classList.contains('show');
+    sh.innerHTML = '<div class="grab"></div>' + html;
+    if (!was) sh.scrollTop = 0;
+    $('#sheetBg').classList.add('show');
+    if (!was) requestAnimationFrame(() => sh.classList.add('show'));
+    sh.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeSheet));
+    if (focusFirst) { const f = sh.querySelector('input.fld'); if (f) setTimeout(() => f.focus(), 300); }
+  }
+  function closeSheet() { $('#sheet').classList.remove('show'); $('#sheetBg').classList.remove('show'); if (document.activeElement) document.activeElement.blur(); }
+  $('#sheetBg').addEventListener('click', closeSheet);
+  function ask(msg, yes) {
+    return new Promise((res) => {
+      const bg = document.createElement('div');
+      bg.style.cssText = 'position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.32);display:flex;align-items:center;justify-content:center;padding:24px;font-family:inherit';
+      bg.innerHTML = `<div style="width:100%;max-width:300px;background:#fff;border-radius:14px;overflow:hidden;text-align:center"><div style="padding:18px 16px;font-size:15px;line-height:1.55;white-space:pre-line">${esc(msg)}</div><div style="display:flex;border-top:.5px solid rgba(60,60,67,.29)"><button data-v="0" style="flex:1;padding:12px;font-size:17px;color:#007aff">やめる</button><button data-v="1" style="flex:1;padding:12px;font-size:17px;font-weight:600;color:#FF3B30;border-left:.5px solid rgba(60,60,67,.29)">${esc(yes || 'OK')}</button></div></div>`;
+      bg.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b) return; bg.remove(); res(b.dataset.v === '1'); });
+      document.body.appendChild(bg);
+    });
+  }
+
+  // ---------- 操作 ----------
+  function switchTab(id) {
+    state.tab = id;
+    document.querySelectorAll('.view').forEach((v) => v.classList.toggle('on', v.id === id));
+    document.querySelectorAll('.tabbar button').forEach((b) => b.classList.toggle('on', b.dataset.tab === id));
+    $('#' + id).scrollTop = 0;
+  }
+  $('.tabbar').addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); if (b) switchTab(b.dataset.tab); });
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#sheet')) return;
+    const t = e.target.closest('[data-work],[data-addwork],[data-filter],[data-svc],[data-addsvc]');
+    if (!t) return;
+    if (t.dataset.work) return openWorkSheet(t.dataset.work);
+    if (t.hasAttribute('data-addwork')) return openWorkSheet(null);
+    if (t.dataset.filter) { state.filter = t.dataset.filter; return renderWorks(); }
+    if (t.dataset.svc) return openSvcSheet(t.dataset.svc);
+    if (t.hasAttribute('data-addsvc')) return openSvcSheet(null);
+  });
+  function renderAll() { renderWorks(); renderSubs(); renderSet(); }
+
+  // ---------- キーボード対策（iPhoneの定石） ----------
+  (function () {
+    const vv = window.visualViewport; if (!vv) return;
+    const root = document.documentElement; let baseH = vv.height, lastH = -1, lastT = -1, lastK = -1;
+    function apply() {
+      const h = Math.round(vv.height), t = Math.max(0, Math.round(vv.offsetTop)), k = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      if (h !== lastH) { root.style.setProperty('--app-height', h + 'px'); lastH = h; }
+      if (t !== lastT) { root.style.setProperty('--app-top', t + 'px'); lastT = t; }
+      if (k !== lastK) { root.style.setProperty('--kb', k + 'px'); lastK = k; }
+      document.body.classList.toggle('keyboard-open', h < baseH - 120);
+    }
+    let until = 0, looping = false;
+    function follow(ms) { until = Math.max(until, performance.now() + ms); if (looping) return; looping = true; const tick = () => { apply(); const a = document.activeElement; const typing = a && /^(INPUT|TEXTAREA)$/.test(a.tagName); if (typing || performance.now() < until) requestAnimationFrame(tick); else looping = false; }; requestAnimationFrame(tick); }
+    vv.addEventListener('resize', () => follow(600)); vv.addEventListener('scroll', () => follow(600));
+    document.addEventListener('focusin', (e) => { follow(1200); const el = e.target; if (el && el.closest && el.closest('#sheet') && el.type !== 'date') [350, 700].forEach((ms) => setTimeout(() => { if (document.activeElement === el) { try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (_) {} } }, ms)); });
+    document.addEventListener('focusout', () => follow(1200));
+    apply();
   })();
 
-  // ---------- visualViewport（キーボード対策） ----------
-  function setupViewportTracking() {
-    const vv = window.visualViewport;
-    if (!vv) return;
-    const root = document.documentElement;
-    let baseHeight = vv.height;
-    function apply() {
-      root.style.setProperty('--app-height', vv.height + 'px');
-      document.body.classList.toggle('keyboard-open', vv.height < baseHeight - 120);
-    }
-    vv.addEventListener('resize', apply);
-    vv.addEventListener('scroll', apply);
-    window.addEventListener('orientationchange', () => { setTimeout(() => { baseHeight = vv.height; apply(); }, 300); });
-    apply();
-  }
-
-  // ---------- Service Worker + 自動アップデート ----------
-  if ('serviceWorker' in navigator) {
+  // ---------- 起動・自動アップデート ----------
+  (async () => {
+    await openDB(); await loadAll(); renderAll();
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+  })();
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
     window.addEventListener('load', async () => {
       try {
-        const swUrl = new URL('sw.js', location.href).href;
-        const res = await fetch(swUrl, { method: 'HEAD' });
-        if (!res.ok) return;
         const reg = await navigator.serviceWorker.register('sw.js');
         if (reg.waiting && navigator.serviceWorker.controller) showUpdateBanner(reg.waiting);
-        reg.addEventListener('updatefound', () => {
-          const sw = reg.installing;
-          if (!sw) return;
-          sw.addEventListener('statechange', () => {
-            if (sw.state === 'installed' && navigator.serviceWorker.controller) showUpdateBanner(sw);
-          });
-        });
+        reg.addEventListener('updatefound', () => { const sw = reg.installing; if (!sw) return; sw.addEventListener('statechange', () => { if (sw.state === 'installed' && navigator.serviceWorker.controller) showUpdateBanner(sw); }); });
         reg.update();
         document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update(); });
         let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (refreshing) return; refreshing = true; window.location.reload();
-        });
+        navigator.serviceWorker.addEventListener('controllerchange', () => { if (refreshing) return; refreshing = true; location.reload(); });
       } catch (e) {}
     });
   }
   function showUpdateBanner(waitingSW) {
     if (document.getElementById('updateBanner')) return;
-    const b = document.createElement('button');
-    b.id = 'updateBanner';
-    b.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg><span>新しいバージョンがあります — タップで更新</span>';
-    b.addEventListener('click', () => {
-      b.disabled = true; b.querySelector('span').textContent = '更新中…';
-      waitingSW.postMessage('SKIP_WAITING');
-    });
-    document.body.appendChild(b);
-    requestAnimationFrame(() => b.classList.add('show'));
+    const b = document.createElement('button'); b.id = 'updateBanner'; b.textContent = '新しいバージョンがあります — タップで更新';
+    b.onclick = () => { b.disabled = true; b.textContent = '更新中…'; waitingSW.postMessage('SKIP_WAITING'); };
+    document.body.appendChild(b); requestAnimationFrame(() => b.classList.add('show'));
   }
 </script>
 </body>
